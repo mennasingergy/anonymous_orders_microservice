@@ -4,6 +4,11 @@ const bodyParser = require('body-parser');
 const { mongoClient } = require('./mongo');
 
 const app = express();
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -107,6 +112,67 @@ app.patch("/api/orders/:order_id", async (req, res) => {
     console.log("[updateShipment] e", e);
   }
 });
+/*const timeoutFunc= app.patch("/api/orders/:order_id", async (req, res) => {
+    try {
+      // const { order_id } = createShipment.order_id;
+      const db = await mongoClient();
+      const order_id = parseInt(req.params.order_id);
+  
+      const shipment = await db
+        .collection("orders")
+        .findOne({ order_id: order_id });
+      if (!shipment) return res.status(200).json("could not find order_id");
+  
+     
+  
+      const currentOrderStatus = shipment.order_status;
+      const nextShipmentStatus = {
+        CREATED: "PROCESSED",
+        PROCESSED: "FULLFILLED",
+        FULLFILLED: "FULLFILLED",
+      }[currentOrderStatus];
+  
+      const updatedDocument = await db
+        .collection("orders")
+        .updateOne(
+          { order_id: order_id },
+          { $set: { order_status: nextShipmentStatus } }
+        );
+      res.status(200).json({
+        body: nextShipmentStatus,
+        message: "Successfully updated order status",
+      });
+    } catch (e) {
+      console.log("[updateShipment] e", e);
+    }
+  });
+  const sleep = require('util').promisify(timeoutFunc);
+  const asyncCallWithTimeout = async (sleep, timeLimit) => {
+    let timeoutHandle;
+
+    const timeoutPromise = new Promise((_resolve, reject) => {
+        timeoutHandle = setTimeout(
+            () => reject(new Error('Async call timeout limit reached')),
+            timeLimit
+        );
+    });
+
+    return Promise.race([sleep, timeoutPromise]).then(result => {
+        clearTimeout(timeoutHandle);
+        return result;
+    })
+}
+
+  const wontTimeout = async () => {
+    try {
+        const { data } = await asyncCallWithTimeout(sleep, 10000);
+        console.log(data);
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
+wontTimeout();*/
 
 app.listen(process.env.PORT || 5000, async () => {
   console.log("The server is running")
