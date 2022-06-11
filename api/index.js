@@ -46,7 +46,7 @@ app.post("/api/orders", async (req, res) => {
     const shipmentStatus = "CREATED";
 
     const newShipmentDocument = await db.collection("orders").insertOne({
-      order_id,
+      order_id:uuid(),
       order_status: shipmentStatus,
       name: req.body.name,
       quantity: req.body.quantity,
