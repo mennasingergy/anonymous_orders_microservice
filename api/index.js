@@ -98,7 +98,7 @@ app.patch("/api/orders/:order_id", async (req, res) => {
   try {
     // const { order_id } = createShipment.order_id;
     const db = await mongoClient();
-    const order_id = parseInt(req.params.order_id);
+    const order_id = parseInt(req.params);
 
     const shipment = await db
       .collection("orders")
