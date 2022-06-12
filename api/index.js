@@ -29,7 +29,7 @@ app.get("/api/orders/:order_id", async (req, res) => {
   }
 }); //zbaty dyy
 
-/*app.post("/api/orders", async (req, res) => {
+app.post("/api/orders", async (req, res) => {
   try {
     const db = await mongoClient();
     if (!db) res.status(500).json("Systems Unavailable");
@@ -60,8 +60,8 @@ app.get("/api/orders/:order_id", async (req, res) => {
   } catch (e) {
     console.log("[createShipment] e", e);
   }
-});*/
-app.post('/api/orders', async (req,res) => {
+});
+/*app.post('/api/orders', async (req,res) => {
     const db = await mongoClient();
     if (!db) res.status(500).send('Systems Unavailable');
   
@@ -70,11 +70,12 @@ app.post('/api/orders', async (req,res) => {
       price: req.body.price,
       quantity: 1,
       order_id: uuid(),
+      order_s
     };
     await db.collection('orders').insertOne(newOrder);
   
     return res.send(newOrder);
-  });
+  });*/
   
 
 app.delete("/api/orders/:order_id", async (req, res) => {
