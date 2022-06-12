@@ -69,7 +69,7 @@ app.post('/api/orders', async (req,res) => {
       name: req.body.name,
       price: req.body.price,
       quantity: 1,
-      id: req.body.id,
+      order_id: req.body.order_id,
     };
     await db.collection('orders').insertOne(newOrder);
   
