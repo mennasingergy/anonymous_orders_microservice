@@ -64,12 +64,14 @@ app.get("/api/orders/:order_id", async (req, res) => {
 app.post('/api/orders', async (req,res) => {
     const db = await mongoClient();
     if (!db) res.status(500).send('Systems Unavailable');
-  
+    const orderStatus = "CREATED";
     const newOrder = {
       name: req.body.name,
       price: req.body.price,
       quantity: 1,
       order_id: uuid(),
+      order_status:orderStatus
+
     };
     await db.collection('orders').insertOne(newOrder);
   
