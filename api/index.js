@@ -125,7 +125,7 @@ app.delete('/api/orders/:order_id', async (req, res) => {
     if (!shipment) return res.status(403).send('order does not exist');
 
     if (shipment.shipment_status === 'CREATED') {
-     await db.collection('orders').updateOne({ order_id }, {$set:{ shipment_status: 'CANCELED' }});
+     await db.collection('orders').updateOne({ order_id }, {$set:{ order_status: 'CANCELED' }});
      const xx=await db.collection('orders').findOne({order_id:order_id});
       return res.status(200).send(xx);
     }
