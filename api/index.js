@@ -35,7 +35,7 @@ app.use(bodyParser.json());
 app.get("/api/orders/:order_id", async (req, res) => {
   const db = await mongoClient();
   if (!db) res.status(500).send("Systems Unavailable");
-  let order_ids = parseInt(req.params.order_id);
+  let order_ids = req.params.order_id;
 
   const shipment = await db
     .collection("orders")
@@ -43,7 +43,7 @@ app.get("/api/orders/:order_id", async (req, res) => {
   if (!shipment) {
     res.status(200).send({ message: "Order not found" });
   } else {
-    res.status(200).send({ body: shipment, message: "Order retrived" });
+    res.status(200).send(shipment);
   }
 }); //zbaty dyy
 
@@ -87,7 +87,7 @@ app.post('/api/orders', async (req,res) => {
       name: req.body.name,
       price: req.body.price,
       quantity: 1,
-      order_id: uuid(),
+      order_id: req.body.order_id,
       order_status:orderStatus
 
     };
@@ -118,7 +118,7 @@ app.patch("/api/orders/:order_id", async (req, res) => {
   try {
     // const { order_id } = createShipment.order_id;
     const db = await mongoClient();
-    const order_id = parseInt(req.params);
+    const order_id = req.params;
 
     const shipment = await db
       .collection("orders")
@@ -140,10 +140,10 @@ app.patch("/api/orders/:order_id", async (req, res) => {
         { order_id: order_id },
         { $set: { order_status: nextShipmentStatus } }
       );
-    res.status(200).json({
+    res.status(200).send(json({
       body: nextShipmentStatus,
       message: "Successfully updated order status",
-    });
+    }));
   } catch (e) {
     console.log("[updateShipment] e", e);
   }
