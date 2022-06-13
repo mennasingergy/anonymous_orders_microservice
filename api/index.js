@@ -107,7 +107,7 @@ app.delete("/api/orders/:order_id", async (req, res) => {
     return res.status(404).json({ msg: "Order not found" });
   } else {
     db.collection("orders").remove({
-      order_id: parseInt(req.params.order_id),
+      order_id: req.params.order_id,
     });
 
     res.json({ msg: "Order removed" });
