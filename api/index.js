@@ -97,7 +97,7 @@ app.post('/api/orders', async (req,res) => {
   });
   
 
-/*app.delete("/api/orders/:order_id", async (req, res) => {
+app.delete("/api/orders/:order_id", async (req, res) => {
   const db = await mongoClient();
   const post = await db
     .collection("orders")
@@ -107,31 +107,10 @@ app.post('/api/orders', async (req,res) => {
     return res.status(404).json({ msg: "Order not found" });
   } else {
     db.collection("orders").remove({
-      order_id: req.params.order_id,
+      order_id: parseInt(req.params.order_id),
     });
 
     res.json({ msg: "Order removed" });
-  }
-});*/
-app.delete('/api/orders/:order_id', async (req, res) => {
-  try {
-   const db = await mongoClient();
-   if (!db) res.status(500).send('Systems Unavailable');
-    console.log('[cancelShipment body]', req.body)
-    const {order_id}  = req.params;
-    if (!order_id) return res.status(403).send('order_id is required');
-
-    const shipment = await db.collection('orders').findOne({ order_id: order_id });
-    if (!shipment) return res.status(403).send('order does not exist');
-
-    if (shipment.shipment_status === 'CREATED') {
-     await db.collection('orders').updateOne({ order_id }, {$set:{ order_status: 'CANCELED' }});
-     const xx=await db.collection('orders').findOne({order_id:order_id});
-      return res.status(200).send(xx);
-    }
-    return res.status(200).send({ body: shipment.order_status, message: 'Cannot cancel this shipments' });   }
-     catch (e) {
-   console.log('[cancelorder] e', e)
   }
 });
 
